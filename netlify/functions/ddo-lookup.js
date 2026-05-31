@@ -1,7 +1,7 @@
 // netlify/functions/ddo-lookup.js
 // Proxies requests to DDO Audit API to avoid CORS issues in the browser.
 
-const DDO_AUDIT_BASE = 'https://www.ddoaudit.com/api/v1/characters';
+const DDO_AUDIT_BASE = 'https://ddo.aiteapi.com/v1/characters/by-server-name';
 
 export async function handler(event) {
   const { server, name } = event.queryStringParameters || {};
@@ -13,7 +13,7 @@ export async function handler(event) {
     };
   }
 
-  const url = `${DDO_AUDIT_BASE}/${encodeURIComponent(server)}/${encodeURIComponent(name)}`;
+  const url = `${DDO_AUDIT_BASE}/${encodeURIComponent(name)}?server_name=${encodeURIComponent(server)}`;
 
   try {
     const response = await fetch(url, {
@@ -21,7 +21,7 @@ export async function handler(event) {
       signal: AbortSignal.timeout(8000),
     });
 
-    // 404 means character not found — that's a valid result, not an error
+    // 404 means character not found — valid result, not an error
     if (response.status === 404) {
       return {
         statusCode: 200,
