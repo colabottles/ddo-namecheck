@@ -335,14 +335,14 @@ async function fetchCharacter(server, name) {
 function buildCharInfo(data) {
   if (!data) return null;
   const parts = [];
-  if (data.Race) parts.push(data.Race);
-  if (Array.isArray(data.Classes) && data.Classes.length) {
-    const classes = data.Classes.map(c => `${c.Name} ${c.Level}`).join(' / ');
+  if (data.race) parts.push(data.race);
+  if (Array.isArray(data.classes) && data.classes.length) {
+    const classes = data.classes.map(c => `${c.name} ${c.level}`).join(' / ');
     parts.push(classes);
-  } else if (data.TotalLevel) {
-    parts.push(`Level ${data.TotalLevel}`);
+  } else if (data.total_level) {
+    parts.push(`Level ${data.total_level}`);
   }
-  if (data.Guild) parts.push(`Guild: ${data.Guild}`);
+  if (data.guild_name) parts.push(`Guild: ${data.guild_name}`);
   return parts.length ? parts.join(' · ') : null;
 }
 
@@ -385,10 +385,10 @@ function renderResult(name, results) {
   const area = document.getElementById('result-area');
   const nameLower = name.toLowerCase();
 
-  const exactHits = results.filter(r => !r.error && r.data && r.data.Name?.toLowerCase() === nameLower);
+  const exactHits = results.filter(r => !r.error && r.data && r.data.name?.toLowerCase() === nameLower);
   const closeHits = results.filter(r => {
-    if (r.error || !r.data?.Name) return false;
-    const dist = levenshtein(r.data.Name.toLowerCase(), nameLower);
+    if (r.error || !r.data?.name) return false;
+    const dist = levenshtein(r.data.name.toLowerCase(), nameLower);
     return dist > 0 && dist <= 2;
   });
   const errorCount = results.filter(r => r.error).length;
@@ -418,7 +418,7 @@ function renderResult(name, results) {
     addToRecent({ name, server: exactHits.map(r => r.server).join(', '), status: 'taken' });
 
   } else if (closeHits.length > 0) {
-    const pills = closeHits.map(r => `<span class="match-pill">${escapeHtml(r.data.Name)}</span>`).join('');
+    const pills = closeHits.map(r => `<span class="match-pill">${escapeHtml(r.data.name)}</span>`).join('');
 
     html = `
       <div class="result-card risky" role="alert">

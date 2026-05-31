@@ -1,7 +1,7 @@
 // netlify/functions/ddo-lookup.js
 // Proxies requests to DDO Audit API to avoid CORS issues in the browser.
 
-const DDO_AUDIT_BASE = 'https://api.ddoaudit.com/v1/characters/by-server-name';
+const DDO_AUDIT_BASE = 'https://api.ddoaudit.com/v1/characters';
 
 export async function handler(event) {
   const { server, name } = event.queryStringParameters || {};
@@ -13,11 +13,11 @@ export async function handler(event) {
     };
   }
 
-  const url = `${DDO_AUDIT_BASE}/${encodeURIComponent(name)}?server_name=${encodeURIComponent(server)}`;
+  const url = `${DDO_AUDIT_BASE}/${encodeURIComponent(server)}/${encodeURIComponent(name)}`;
 
   try {
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'DDO-Name-Checker/1.0' },
+      headers: { 'accept': 'application/json' },
       signal: AbortSignal.timeout(8000),
     });
 
@@ -37,12 +37,13 @@ export async function handler(event) {
       };
     }
 
-    const data = await response.json();
+    const json = await response.json();
 
+    // Response is wrapped: { data: {...}, source: "..." }
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(json.data ?? null),
     };
   } catch (err) {
     return {
