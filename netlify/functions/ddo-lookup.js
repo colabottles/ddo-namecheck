@@ -1,7 +1,7 @@
 // netlify/functions/ddo-lookup.js
 // Proxies requests to DDO Audit API to avoid CORS issues in the browser.
 
-const DDO_AUDIT_BASE = 'https://ddo.aiteapi.com/v1/characters/by-server-name';
+const DDO_AUDIT_BASE = 'https://api.ddoaudit.com/v1/characters/by-server-name';
 
 export async function handler(event) {
   const { server, name } = event.queryStringParameters || {};
