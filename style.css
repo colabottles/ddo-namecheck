@@ -379,9 +379,9 @@ body {
 }
 
 .char-info {
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   font-style: italic;
-  color: var(--parchment-faint);
+  color: var(--ivory);
   margin-top: 6px;
 }
 
@@ -617,7 +617,6 @@ body {
 }
 
 /* --- Recently checked --- */
-
 .recent-header {
   display: flex;
   align-items: baseline;
@@ -631,13 +630,13 @@ body {
 
 .clear-btn {
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 1rem;
   letter-spacing: 0.08em;
   padding: 3px 10px;
-  border: 1px solid var(--stone-rim);
+  border: 1px solid var(--ivory);
   border-radius: 2px;
   background: transparent;
-  color: var(--parchment-faint);
+  color: var(--parchment);
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -678,7 +677,7 @@ body {
   border: none;
   color: var(--parchment);
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: 0.04em;
   cursor: pointer;
   text-align: left;
@@ -697,14 +696,14 @@ body {
 }
 
 .recent-meta {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--parchment-faint);
   font-style: italic;
   flex-shrink: 0;
 }
 
 .recent-status {
-  font-size: 0.75rem;
+  font-size: 1rem;
   flex-shrink: 0;
   width: 1.2rem;
   text-align: center;
@@ -727,7 +726,7 @@ body {
   border: none;
   color: var(--parchment-faint);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 1rem;
   padding: 2px 4px;
   border-radius: 2px;
   flex-shrink: 0;
