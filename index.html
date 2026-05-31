@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DDO Name Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Grenze:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=IM+Fell+DW+Pica:ital@0;1&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="parchment-grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo-mark" aria-hidden="true">⚔</div>
+      <div>
+        <h1 class="site-title">DDO Name Checker</h1>
+        <p class="site-tagline">Check character name availability across Dungeons &amp; Dragons
+          Online servers</p>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="main">
+
+    <!-- Server selection -->
+    <section class="panel" aria-labelledby="server-heading">
+      <h2 id="server-heading" class="panel-heading">Server</h2>
+      <div class="server-grid">
+        <button class="server-btn active" data-server="Shadowdale"
+          aria-pressed="true">Shadowdale</button>
+        <button class="server-btn" data-server="Cormyr" aria-pressed="false">Cormyr</button>
+        <button class="server-btn" data-server="Thrane" aria-pressed="false">Thrane</button>
+        <button class="server-btn" data-server="Moonsea" aria-pressed="false">Moonsea</button>
+        <button class="server-btn server-all" data-server="all" aria-pressed="false">All
+          Servers</button>
+      </div>
+    </section>
+
+    <!-- Name search -->
+    <section class="panel search-panel" aria-labelledby="search-heading">
+      <h2 id="search-heading" class="panel-heading">Check a Name</h2>
+      <div class="search-row">
+        <label for="name-input" class="sr-only">Character name</label>
+        <input
+          type="text"
+          id="name-input"
+          class="name-input"
+          placeholder="Enter character name…"
+          maxlength="32"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false" />
+        <button class="check-btn" id="check-btn">
+          <span class="btn-text">Check</span>
+          <span class="btn-icon" aria-hidden="true">⚔</span>
+        </button>
+      </div>
+
+      <!-- Result area -->
+      <div id="result-area" role="status" class="result-area"></div>
+    </section>
+
+    <!-- Recently checked -->
+    <section class="panel" aria-labelledby="recent-heading" id="recent-panel" hidden>
+      <div class="recent-header">
+        <h2 id="recent-heading" class="panel-heading">Recently Checked</h2>
+        <button class="clear-btn" id="clear-recent-btn">Clear</button>
+      </div>
+      <ul id="recent-list" class="recent-list"></ul>
+    </section>
+
+    <!-- Name generator -->
+    <section class="panel generator-panel" aria-labelledby="gen-heading">
+      <h2 id="gen-heading" class="panel-heading">Name Generator</h2>
+      <p class="panel-sub">Click any name to check it instantly.</p>
+
+      <div class="style-row" role="group" aria-label="Name style">
+        <button class="style-btn active" data-style="fantasy" aria-pressed="true">Fantasy</button>
+        <button class="style-btn" data-style="dwarven" aria-pressed="false">Dwarven</button>
+        <button class="style-btn" data-style="elven" aria-pressed="false">Elven</button>
+        <button class="style-btn" data-style="halfling" aria-pressed="false">Halfling</button>
+        <button class="style-btn" data-style="gnome" aria-pressed="false">Gnome</button>
+        <button class="style-btn" data-style="halforc" aria-pressed="false">Half-Orc</button>
+        <button class="style-btn" data-style="tiefling" aria-pressed="false">Tiefling</button>
+        <button class="style-btn" data-style="dragonborn" aria-pressed="false">Dragonborn</button>
+        <button class="style-btn" data-style="warforged" aria-pressed="false">Warforged</button>
+        <button class="style-btn" data-style="eberron" aria-pressed="false">Eberron</button>
+        <button class="style-btn" data-style="procedural" aria-pressed="false">Procedural ✦</button>
+      </div>
+
+      <div id="name-grid" class="name-grid"></div>
+
+      <button class="regen-btn" id="regen-btn">
+        ↻ Regenerate
+      </button>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>Name availability data via <a href="https://www.ddoaudit.com" target="_blank"
+        rel="noopener noreferrer">DDO Audit</a>. Results are best-effort (always verify in-game
+      before committing to a name).</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

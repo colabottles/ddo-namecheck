@@ -1,0 +1,12 @@
+{
+  "name": "ddo-namecheck",
+  "version": "1.0.0",
+  "description": "A Name Check for DDO to make it a little easier to find a name",
+  "license": "ISC",
+  "author": "Todd Libby",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
