@@ -43,7 +43,7 @@ body {
   background-position: center center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   color: var(--parchment);
   font-family: var(--font-body);
   line-height: 1.65;
