@@ -31,6 +31,17 @@
   --font-body: 'IM Fell DW Pica', 'Georgia', serif;
 }
 
+/* --- Grain overlay --- */
+.parchment-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
 /* --- Body --- */
 html {
   font-size: clamp(1rem, 1vw, 1.75rem);
@@ -41,7 +52,6 @@ body {
   background-color: var(--ink);
   background-image: url("background.jpg");
   background-position: center center;
-  background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
   color: var(--parchment);
@@ -369,9 +379,9 @@ body {
 }
 
 .char-info {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-style: italic;
-  color: var(--ivory);
+  color: var(--parchment-faint);
   margin-top: 6px;
 }
 
@@ -495,7 +505,43 @@ body {
   outline-offset: 2px;
 }
 
-/* --- Name grid --- */
+/* --- Gender buttons --- */
+.gender-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1rem;
+}
+
+.gender-btn {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  padding: 5px 16px;
+  border: 1px solid var(--stone-rim);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--parchment-faint);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.gender-btn:hover {
+  color: var(--parchment);
+  border-color: var(--parchment-faint);
+}
+
+.gender-btn.active {
+  border-color: var(--gold-dim);
+  color: var(--gold);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.gender-btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+
 .name-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -607,6 +653,7 @@ body {
 }
 
 /* --- Recently checked --- */
+
 .recent-header {
   display: flex;
   align-items: baseline;
@@ -620,13 +667,13 @@ body {
 
 .clear-btn {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.65rem;
   letter-spacing: 0.08em;
   padding: 3px 10px;
-  border: 1px solid var(--ivory);
+  border: 1px solid var(--stone-rim);
   border-radius: 2px;
   background: transparent;
-  color: var(--parchment);
+  color: var(--parchment-faint);
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
@@ -667,7 +714,7 @@ body {
   border: none;
   color: var(--parchment);
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.85rem;
   letter-spacing: 0.04em;
   cursor: pointer;
   text-align: left;
@@ -686,14 +733,14 @@ body {
 }
 
 .recent-meta {
-  font-size: 1rem;
+  font-size: 0.75rem;
   color: var(--parchment-faint);
   font-style: italic;
   flex-shrink: 0;
 }
 
 .recent-status {
-  font-size: 1rem;
+  font-size: 0.75rem;
   flex-shrink: 0;
   width: 1.2rem;
   text-align: center;
@@ -716,7 +763,7 @@ body {
   border: none;
   color: var(--parchment-faint);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.85rem;
   padding: 2px 4px;
   border-radius: 2px;
   flex-shrink: 0;

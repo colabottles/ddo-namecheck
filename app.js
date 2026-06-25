@@ -6,100 +6,367 @@ const RECENT_MAX = 10;
 
 let selectedServers = ['Shadowdale'];
 let selectedStyle = 'fantasy';
+let selectedGender = 'male';
 let selectedLastStyle = 'fantasy';
 
-// --- Name pools (fixed) ---
+// --- Name pools (fixed, split by gender) ---
+// Each race has male, female, and neutral sub-pools of ~24 names each.
 
 const NAME_POOLS = {
-  fantasy: [
-    ['Araveth', 'Ranger-born'], ['Theron', 'Battle-scarred'], ['Miravel', 'Shadow-touched'],
-    ['Keldran', 'Iron-willed'], ['Seraphyn', 'Void-kissed'], ['Duskwyn', 'Twilight'],
-    ['Orvath', 'Rune-marked'], ['Lyndreth', 'Storm-caller'], ['Vael', 'Pale fire'],
-    ['Torindal', 'Oathkeeper'], ['Amarix', 'Forgotten'], ['Seladrae', 'Moonbound'],
-    ['Cavreth', 'Dusk-sworn'], ['Ynavar', 'Far wanderer'], ['Drethis', 'Ashen path'],
-    ['Sorvaine', 'Hollow crown'],
-  ],
-  dwarven: [
-    ['Bolgrin', 'Stone-fist'], ['Thordak', 'Ironback'], ['Durnheld', 'Deep-axe'],
-    ['Gunda', 'Forge-born'], ['Krumbar', 'Grudgebearer'], ['Valdrak', 'Mountainheart'],
-    ['Bronka', 'Gold-vein'], ['Snorvik', 'Clanhammer'], ['Dagni', 'Ember-eye'],
-    ['Rolfgar', 'Old stone'], ['Bryndis', 'Shield-maiden'], ['Ulvarn', 'Deep iron'],
-    ['Heldrak', 'Tunnel-king'], ['Morkeld', 'Rune-axe'], ['Sigra', 'Fire-anvil'],
-    ['Veldrak', 'Grudge-sworn'],
-  ],
-  duergar: [
-    ['Grazzt', 'Underdark-born'], ['Thrak', 'Ashen-veined'], ['Dorzak', 'Bitter-heart'],
-    ['Skrug', 'Stonegrey'], ['Varka', 'Shadowforged'], ['Grull', 'Deep-gnasher'],
-    ['Thorzak', 'Grudge-keeper'], ['Drusk', 'Ashenhelm'], ['Kraza', 'Gloom-tempered'],
-    ['Brak', 'Iron-spite'], ['Zulka', 'Cavern-bred'], ['Ghorza', 'Dusk-anvil'],
-    ['Skruzz', 'Saltrock'], ['Vraka', 'Hollow-eye'], ['Driznak', 'Deepwatch'],
-    ['Tharg', 'Stonewraith'],
-  ],
-  elven: [
-    ['Aelindra', 'Starweave'], ['Sylvari', 'Dawnlight'], ['Caladrel', 'Windwhisper'],
-    ['Elarith', 'Silver gaze'], ['Naevys', 'Moondrift'], ['Thalindë', 'Leaf-bound'],
-    ['Aerindel', 'Sunspire'], ['Lireth', 'Dream-touch'], ['Valandil', 'Starfall'],
-    ['Isilveth', 'Pale shore'], ['Celendil', 'Farseer'], ['Aravel', 'Ember dawn'],
-    ['Sylavel', 'Twilight-blood'], ['Eredil', 'Moonveil'], ['Calithar', 'First light'],
-    ['Miraeleth', 'Echo-song'],
-  ],
-  halfling: [
-    ['Bimble', 'Lightfoot'], ['Corwin', 'Pipemaster'], ['Lidda', 'Quickstep'],
-    ['Tomas', 'Barleycorn'], ['Merry', 'Hearthfire'], ['Belda', 'Thistledown'],
-    ['Perrin', 'Copperkettle'], ['Rosalind', 'Meadow-run'], ['Finwick', 'Bramble'],
-    ['Yonder', 'Luckpenny'], ['Sable', 'Foxfoot'], ['Jimble', 'Far-river'],
-    ['Wren', 'Copperpenny'], ['Tibble', 'Burrow-born'], ['Nell', 'Pipesmoke'],
-    ['Aldrick', 'Long-road'],
-  ],
-  gnome: [
-    ['Bixby', 'Tinkerer'], ['Zook', 'Sparkcaster'], ['Namfoodle', 'Oddwright'],
-    ['Alston', 'Glyphweaver'], ['Wrenn', 'Clockwarden'], ['Dimble', 'Fumble-fix'],
-    ['Fibblestib', 'Rattle-brain'], ['Gimble', 'Lampwright'], ['Orryn', 'Gadgetsmith'],
-    ['Waywocket', 'Far-tumbler'], ['Ellywick', 'Spell-tinker'], ['Sindri', 'Runewright'],
-    ['Tavita', 'Mirthweaver'], ['Kellen', 'Prismwright'], ['Lilli', 'Inkstained'],
-    ['Pock', 'Odd-step'],
-  ],
-  halforc: [
-    ['Grax', 'Bone-crusher'], ['Morg', 'Warcaller'], ['Dasha', 'Ironblood'],
-    ['Urzog', 'Scarred'], ['Brenna', 'Half-blood'], ['Karg', 'Stoneskin'],
-    ['Yulga', 'Fell-handed'], ['Thokk', 'Ironjaw'], ['Durga', 'Storm-born'],
-    ['Vrash', 'Sunderbone'], ['Nala', 'Ashwalker'], ['Gorka', 'Ravenbrow'],
-    ['Tusk', 'Split-ear'], ['Bragh', 'Bloodcrown'], ['Olgra', 'Warlorn'],
-    ['Krusk', 'Grudge-heart'],
-  ],
-  tiefling: [
-    ['Mordecai', 'Hellbound'], ['Sevryn', 'Ember-born'], ['Vex', 'Shadowtail'],
-    ['Zariel', 'Fallen light'], ['Nyx', 'Smokewraith'], ['Calix', 'Brimstone'],
-    ['Lilith', 'Silvertongue'], ['Akmenos', 'Ashsoul'], ['Barakas', 'Hellmarked'],
-    ['Damaia', 'Ember-eye'], ['Hadar', 'Darkpulse'], ['Kairon', 'Soulfire'],
-    ['Morthos', 'Hex-born'], ['Riven', 'Ashblood'], ['Skamos', 'Voidwarden'],
-    ['Therai', 'Brand-touched'],
-  ],
-  dragonborn: [
-    ['Arjhan', 'Scale-sworn'], ['Balasar', 'Emberclaw'], ['Donaar', 'Thunderscale'],
-    ['Ghesh', 'Ironwing'], ['Heskan', 'Ashbreath'], ['Kriv', 'Stormborn'],
-    ['Medrash', 'Oathscale'], ['Mehen', 'Forgecrest'], ['Nadarr', 'Wildfire'],
-    ['Pandjed', 'Goldscale'], ['Patrin', 'Skyborn'], ['Rhogar', 'Bladescale'],
-    ['Shamash', 'Cinderclaw'], ['Shedinn', 'Voidwing'], ['Tarhun', 'Ironscale'],
-    ['Torinn', 'Stormcrest'],
-  ],
-  warforged: [
-    ['Onyx-7', 'Combat unit'], ['Frenkel', 'Sentinel'], ['Bastion', 'Shield-line'],
-    ['Caliburn', 'Edge-sworn'], ['Ironveil', 'Watcher'], ['Null-4', 'Purpose-built'],
-    ['Aurek', 'Stalwart'], ['Siege', 'Breaker'], ['Anvil', 'Forged-true'],
-    ['Remnant', 'Survivor'], ['Crux', 'Resolver'], ['Veritas', 'Seeker'],
-    ['Chassis', 'First-made'], ['Pyre-3', 'Incendiary'], ['Durakon', 'Unbreaking'],
-    ['Nullval', 'Last unit'],
-  ],
-  eberron: [
-    ['Khorvath', 'Dragonmarked'], ['Irulan', 'House-sworn'], ['Zendak', 'Wanderer'],
-    ['Merrix', 'Artificer-kin'], ['Thessa', 'Lyrandar blood'], ['Vyndal', 'Deneith blade'],
-    ['Raelith', 'Tharashk'], ['Kaeleth', 'Medani eye'], ['Davan', 'Kundarak vault'],
-    ['Sorith', 'Cannith-made'], ['Phalan', 'Ghallanda inn'], ['Elix', 'Sivis-born'],
-    ['Traveth', 'Storm-bound'], ['Nyrith', 'Shadow-marked'], ['Caldas', 'Coin-sworn'],
-    ['Ryvek', 'Passage-born'],
-  ],
+  fantasy: {
+    male: [
+      ['Araveth', 'Ranger-born'], ['Theron', 'Battle-scarred'], ['Keldran', 'Iron-willed'],
+      ['Orvath', 'Rune-marked'], ['Torindal', 'Oathkeeper'], ['Cavreth', 'Dusk-sworn'],
+      ['Drethis', 'Ashen path'], ['Valdros', 'Storm-bringer'], ['Mordecai', 'Far-wanderer'],
+      ['Eryndal', 'Shadow-step'], ['Halveth', 'Pale rider'], ['Corvyn', 'Night-born'],
+      ['Bravik', 'Iron oath'], ['Seldran', 'Ember-eye'], ['Tharvin', 'Cold-hearted'],
+      ['Gorveth', 'Void-touched'], ['Malrak', 'Dark-warden'], ['Drevan', 'Last-light'],
+      ['Korrath', 'Stone-sworn'], ['Aelvyn', 'Silver-tongue'], ['Draeven', 'Shadow-cloak'],
+      ['Caerath', 'First-blade'], ['Nyrvath', 'Dusk-born'], ['Zorvyn', 'Hollow-crown'],
+    ],
+    female: [
+      ['Miravel', 'Shadow-touched'], ['Seraphyn', 'Void-kissed'], ['Lyndreth', 'Storm-caller'],
+      ['Amarix', 'Forgotten'], ['Seladrae', 'Moonbound'], ['Sorvaine', 'Hollow crown'],
+      ['Vaelith', 'Pale fire'], ['Threnody', 'Mourning-song'], ['Caeldris', 'Silver-born'],
+      ['Duskwyn', 'Twilight'], ['Nyravel', 'Night-weaver'], ['Elyndra', 'Moon-touched'],
+      ['Zareveth', 'Storm-kissed'], ['Mirasel', 'Dawn-walker'], ['Coravel', 'Ember-born'],
+      ['Sylveth', 'Leaf-touched'], ['Aelindra', 'Star-weave'], ['Vexara', 'Shadow-heart'],
+      ['Thessaly', 'Rune-singer'], ['Rynavel', 'Pale shore'], ['Kaeldris', 'Iron-will'],
+      ['Solvaine', 'Cold-fire'], ['Draveth', 'Ashen-born'], ['Morvaine', 'Dark-crown'],
+    ],
+    neutral: [
+      ['Vael', 'Pale fire'], ['Ynavar', 'Far wanderer'], ['Duskwyn', 'Twilight'],
+      ['Ryn', 'Swift shadow'], ['Corveth', 'Nightborn'], ['Aelith', 'Star-touched'],
+      ['Xavan', 'Void-walker'], ['Dreth', 'Ashen'], ['Solvan', 'Cold light'],
+      ['Miran', 'Silver-eye'], ['Nyxan', 'Dark-wanderer'], ['Vaen', 'Pale'],
+      ['Zorah', 'Ember-born'], ['Caelith', 'Sky-touched'], ['Tharyn', 'Stone-heart'],
+      ['Elvan', 'Forest-kin'], ['Vorath', 'Null-sworn'], ['Serath', 'Twilight-walker'],
+      ['Kael', 'Iron-born'], ['Marev', 'Shadow-touched'], ['Zoryn', 'Hollow'],
+      ['Daevyn', 'Storm-marked'], ['Ryven', 'Quick-blade'], ['Ashan', 'Ash-born'],
+    ],
+  },
+  dwarven: {
+    male: [
+      ['Bolgrin', 'Stone-fist'], ['Thordak', 'Ironback'], ['Durnheld', 'Deep-axe'],
+      ['Krumbar', 'Grudgebearer'], ['Valdrak', 'Mountainheart'], ['Snorvik', 'Clanhammer'],
+      ['Rolfgar', 'Old stone'], ['Ulvarn', 'Deep iron'], ['Heldrak', 'Tunnel-king'],
+      ['Morkeld', 'Rune-axe'], ['Veldrak', 'Grudge-sworn'], ['Thordin', 'Forge-heart'],
+      ['Brumbar', 'Clan-elder'], ['Durkon', 'Stone-warden'], ['Grumnak', 'Iron-fist'],
+      ['Baldrek', 'Gold-finder'], ['Mordin', 'Deep-delver'], ['Thordun', 'Hammer-sworn'],
+      ['Grimnar', 'Battle-scarred'], ['Vondrak', 'Stone-crusher'], ['Dolgrin', 'Rune-forger'],
+      ['Bruldar', 'Fire-beard'], ['Thokdak', 'Iron-jaw'], ['Gorvald', 'Grudge-heart'],
+    ],
+    female: [
+      ['Gunda', 'Forge-born'], ['Bronka', 'Gold-vein'], ['Dagni', 'Ember-eye'],
+      ['Bryndis', 'Shield-maiden'], ['Sigra', 'Fire-anvil'], ['Helka', 'Stone-heart'],
+      ['Thordis', 'Hammer-born'], ['Grimsa', 'Battle-scarred'], ['Durna', 'Deep-miner'],
+      ['Valdra', 'Mountain-kin'], ['Morkra', 'Rune-carved'], ['Brunheld', 'Forge-maid'],
+      ['Heldra', 'Tunnel-born'], ['Snora', 'Clanswoman'], ['Korna', 'Iron-born'],
+      ['Dagra', 'Ember-heart'], ['Thrina', 'Gold-vein'], ['Vordna', 'Stone-warden'],
+      ['Balda', 'Fire-touched'], ['Grimda', 'Battle-maid'], ['Ulvra', 'Deep-iron'],
+      ['Dorna', 'Grudge-keeper'], ['Skafna', 'Mountain-born'], ['Rolfra', 'Clan-heart'],
+    ],
+    neutral: [
+      ['Durin', 'Deep-one'], ['Stonik', 'Stone-child'], ['Veld', 'Iron-born'],
+      ['Bronk', 'Gold-touch'], ['Thrik', 'Hammer-sworn'], ['Grun', 'Deep-delver'],
+      ['Durnk', 'Forge-kin'], ['Skeld', 'Stone-ward'], ['Mork', 'Rune-mark'],
+      ['Helm', 'Iron-will'], ['Brak', 'Grudge-born'], ['Torn', 'Old-stone'],
+      ['Volk', 'Mountain-born'], ['Greld', 'Deep-axe'], ['Thunk', 'Hammer-kin'],
+      ['Durk', 'Stone-heart'], ['Beld', 'Forge-born'], ['Snork', 'Clan-sworn'],
+      ['Grunk', 'Iron-back'], ['Threk', 'Battle-worn'], ['Meld', 'Deep-fire'],
+      ['Vord', 'Gold-finder'], ['Brunk', 'Stone-fist'], ['Held', 'Tunnel-ward'],
+    ],
+  },
+  duergar: {
+    male: [
+      ['Grazzt', 'Underdark-born'], ['Thrak', 'Ashen-veined'], ['Dorzak', 'Bitter-heart'],
+      ['Skrug', 'Stonegrey'], ['Grull', 'Deep-gnasher'], ['Thorzak', 'Grudge-keeper'],
+      ['Drusk', 'Ashenhelm'], ['Brak', 'Iron-spite'], ['Driznak', 'Deepwatch'],
+      ['Tharg', 'Stonewraith'], ['Vorzak', 'Gloom-born'], ['Skruzz', 'Saltrock'],
+      ['Grukk', 'Ash-veined'], ['Dorzul', 'Deep-warden'], ['Thrugg', 'Stone-gnasher'],
+      ['Borzak', 'Bitter-axe'], ['Skrull', 'Hollow-eye'], ['Drukk', 'Thrall-born'],
+      ['Grazzak', 'Underdark-grey'], ['Threkk', 'Ashen-lord'], ['Vorzul', 'Shadow-delver'],
+      ['Dorznak', 'Gloom-warden'], ['Skravak', 'Stone-spite'], ['Gruknak', 'Bitter-soul'],
+    ],
+    female: [
+      ['Varka', 'Shadowforged'], ['Kraza', 'Gloom-tempered'], ['Zulka', 'Cavern-bred'],
+      ['Ghorza', 'Dusk-anvil'], ['Vraka', 'Hollow-eye'], ['Skarna', 'Ashen-born'],
+      ['Druna', 'Reclaimed'], ['Thrakka', 'Unbroken'], ['Mogra', 'Stone-hearted'],
+      ['Borga', 'Endured'], ['Vorzka', 'Deep-born'], ['Skraza', 'Gloom-touched'],
+      ['Grazza', 'Bitter-heart'], ['Dorzna', 'Shadow-vein'], ['Threkka', 'Ash-maid'],
+      ['Borzna', 'Iron-spite'], ['Skrulla', 'Hollow-born'], ['Druska', 'Cavern-born'],
+      ['Gruzza', 'Underdark-bred'], ['Thrunga', 'Stone-maid'], ['Vorzna', 'Gloom-heart'],
+      ['Dorzka', 'Deep-warden'], ['Skravna', 'Stone-vein'], ['Gruknza', 'Bitter-born'],
+    ],
+    neutral: [
+      ['Vrox', 'Hollow'], ['Skarn', 'Scar-marked'], ['Druz', 'Ash-born'],
+      ['Grak', 'Stone-grey'], ['Thraz', 'Bitter'], ['Bork', 'Iron-spite'],
+      ['Skraz', 'Gloom-touched'], ['Dorn', 'Deep-one'], ['Vrak', 'Shadow-born'],
+      ['Gruz', 'Underdark'], ['Throk', 'Ashen'], ['Skrul', 'Hollow-eye'],
+      ['Drak', 'Dark-born'], ['Vorz', 'Cavern-bred'], ['Grax', 'Bitter-stone'],
+      ['Thruk', 'Ash-veined'], ['Skrax', 'Gloom-born'], ['Drux', 'Stone-spite'],
+      ['Vrax', 'Hollow-heart'], ['Graz', 'Deep-grey'], ['Brak', 'Iron-born'],
+      ['Skrok', 'Shadow-kin'], ['Dorz', 'Cavern-ward'], ['Thrix', 'Bitter-soul'],
+    ],
+  },
+  elven: {
+    male: [
+      ['Caladrel', 'Windwhisper'], ['Valandil', 'Starfall'], ['Celendil', 'Farseer'],
+      ['Calithar', 'First light'], ['Aerindel', 'Sunspire'], ['Thalion', 'Steadfast'],
+      ['Galadhon', 'Tree-friend'], ['Iorhael', 'Old wise one'], ['Eluréd', 'Star-crowned'],
+      ['Maeglin', 'Sharp-glance'], ['Caranthir', 'Red-faced'], ['Faelivrin', 'Sun-glitter'],
+      ['Elarith', 'Silver gaze'], ['Aerindor', 'Dawn-walker'], ['Sylvador', 'Forest-kin'],
+      ['Calindor', 'Light-bringer'], ['Tharindel', 'Storm-eye'], ['Vaelindor', 'Star-walker'],
+      ['Aerindoth', 'Sky-touched'], ['Sylvindel', 'Leaf-bringer'], ['Caladindor', 'Wind-friend'],
+      ['Mithindel', 'Grey-eye'], ['Elorveth', 'Star-born'], ['Celindor', 'Silver-walker'],
+    ],
+    female: [
+      ['Aelindra', 'Starweave'], ['Sylvari', 'Dawnlight'], ['Naevys', 'Moondrift'],
+      ['Thalindë', 'Leaf-bound'], ['Lireth', 'Dream-touch'], ['Isilveth', 'Pale shore'],
+      ['Aravel', 'Ember dawn'], ['Sylavel', 'Twilight-blood'], ['Eredil', 'Moonveil'],
+      ['Miraeleth', 'Echo-song'], ['Elarith', 'Silver gaze'], ['Nimloth', 'White blossom'],
+      ['Elwing', 'Star-spray'], ['Tathar', 'Willow'], ['Lossëa', 'Snow-touched'],
+      ['Mithrellas', 'Grey-leaf'], ['Sereth', 'Calm river'], ['Aewen', 'Bird-maiden'],
+      ['Caladwen', 'Light-maid'], ['Sylindra', 'Forest-dancer'], ['Aerindra', 'Sky-maiden'],
+      ['Calindra', 'Silver-born'], ['Vaelindra', 'Star-maiden'], ['Tharindra', 'Storm-touched'],
+    ],
+    neutral: [
+      ['Vael', 'Star-touched'], ['Tathar', 'Willow'], ['Sereth', 'Calm river'],
+      ['Aelin', 'Silver-light'], ['Calin', 'Bright-one'], ['Sylvin', 'Forest-kin'],
+      ['Mithrin', 'Grey-mantle'], ['Thalin', 'Storm-touched'], ['Aerith', 'Sky-born'],
+      ['Lorien', 'Dream-land'], ['Elarin', 'Star-born'], ['Calindë', 'Silver-touched'],
+      ['Sylindë', 'Forest-born'], ['Vaelin', 'Star-walker'], ['Tharindë', 'Storm-born'],
+      ['Aelindë', 'Star-weave'], ['Mithindë', 'Grey-eye'], ['Elorindë', 'Star-song'],
+      ['Celindë', 'Silver-song'], ['Aerindë', 'Sky-touched'], ['Sylvindë', 'Leaf-song'],
+      ['Caladindë', 'Wind-song'], ['Vaelindë', 'Star-song'], ['Galindë', 'Tree-song'],
+    ],
+  },
+  halfling: {
+    male: [
+      ['Corwin', 'Pipemaster'], ['Tomas', 'Barleycorn'], ['Finwick', 'Bramble'],
+      ['Yonder', 'Luckpenny'], ['Jimble', 'Far-river'], ['Aldrick', 'Long-road'],
+      ['Tibble', 'Burrow-born'], ['Perrin', 'Copperkettle'], ['Odo', 'Round and merry'],
+      ['Bungo', 'Homebody'], ['Falco', 'Quick feet'], ['Drogo', 'Quiet farmer'],
+      ['Milo', 'Garden-tender'], ['Tobold', 'Pipe-lover'], ['Hamfast', 'Old Shire stock'],
+      ['Largo', 'Slow-footed'], ['Fosco', 'Deep-root'], ['Merric', 'Merry kin'],
+      ['Bimble', 'Lightfoot'], ['Willum', 'Wander-foot'], ['Cob', 'Field-born'],
+      ['Stirling', 'Silver-bright'], ['Bramwell', 'Thorn-vale'], ['Rondo', 'Round-road'],
+    ],
+    female: [
+      ['Lidda', 'Quickstep'], ['Rosalind', 'Meadow-run'], ['Belda', 'Thistledown'],
+      ['Wren', 'Copperpenny'], ['Nell', 'Pipesmoke'], ['Marigold', 'Flower-named'],
+      ['Rosie', 'Sweet and sturdy'], ['Pansy', 'Garden-named'], ['Daisy', 'Bright'],
+      ['Belladonna', 'Adventurous'], ['Primula', 'River-born'], ['Esmeralda', 'Jewel-named'],
+      ['Lily', 'Flower-named'], ['Peony', 'Bloom-bright'], ['Ruby', 'Gem-heart'],
+      ['Peregrina', 'Far-walker'], ['Camelia', 'Flower-kin'], ['Lavinia', 'Soft-spoken'],
+      ['Coral', 'River-bright'], ['Hilda', 'Steadfast'], ['Blossom', 'Spring-born'],
+      ['Amber', 'Warm-glow'], ['Ivy', 'Creeper-root'], ['Fern', 'Forest-kin'],
+    ],
+    neutral: [
+      ['Sable', 'Foxfoot'], ['Merry', 'Hearthfire'], ['Pip', 'Small-step'],
+      ['Robin', 'Quick-wit'], ['Brin', 'Briar-born'], ['Ash', 'Hearth-warm'],
+      ['Clover', 'Meadow-kin'], ['Reed', 'River-born'], ['Flint', 'Field-stone'],
+      ['Brook', 'Stream-side'], ['Dew', 'Morning-touch'], ['Briar', 'Thorn-born'],
+      ['Thistle', 'Prickle-kin'], ['Grain', 'Field-born'], ['Vale', 'Hollow-home'],
+      ['Wick', 'Candle-bright'], ['Soot', 'Hearth-born'], ['Cress', 'Stream-side'],
+      ['Burr', 'Thorn-touch'], ['Nook', 'Hidden-hollow'], ['Gorse', 'Bush-born'],
+      ['Peat', 'Bog-kin'], ['Sedge', 'Marsh-born'], ['Twig', 'Forest-light'],
+    ],
+  },
+  gnome: {
+    male: [
+      ['Bixby', 'Tinkerer'], ['Zook', 'Sparkcaster'], ['Alston', 'Glyphweaver'],
+      ['Dimble', 'Fumble-fix'], ['Gimble', 'Lampwright'], ['Orryn', 'Gadgetsmith'],
+      ['Sindri', 'Runewright'], ['Kellen', 'Prismwright'], ['Pock', 'Odd-step'],
+      ['Fibble', 'Rattle-brain'], ['Wren', 'Clockwarden'], ['Glim', 'Bright-touch'],
+      ['Twick', 'Spring-winder'], ['Cogsworth', 'Gear-minded'], ['Sprock', 'Wheel-turner'],
+      ['Fizzwick', 'Spark-bright'], ['Glitter', 'Shine-touched'], ['Ratchet', 'Gear-born'],
+      ['Noodle', 'Odd-think'], ['Sprocket', 'Wheel-born'], ['Tinker', 'Make-it-work'],
+      ['Glimmer', 'Light-touch'], ['Wobble', 'Off-kilter'], ['Cog', 'Gear-heart'],
+    ],
+    female: [
+      ['Namfoodle', 'Oddwright'], ['Wrenn', 'Clockwarden'], ['Ellywick', 'Spell-tinker'],
+      ['Tavita', 'Mirthweaver'], ['Lilli', 'Inkstained'], ['Waywocket', 'Far-tumbler'],
+      ['Zanna', 'Spark-bright'], ['Milli', 'Gear-heart'], ['Fizzle', 'Bright-spark'],
+      ['Glinda', 'Glow-born'], ['Trinket', 'Small-craft'], ['Nimble', 'Quick-finger'],
+      ['Sparkie', 'Flame-touch'], ['Whisper', 'Soft-gear'], ['Glitter', 'Shine-born'],
+      ['Dazzle', 'Bright-work'], ['Twinkle', 'Star-touched'], ['Prism', 'Color-born'],
+      ['Gadget', 'Make-it-work'], ['Widget', 'Small-make'], ['Gizmo', 'Odd-craft'],
+      ['Blinky', 'Light-born'], ['Fizzy', 'Bubble-bright'], ['Zippy', 'Quick-gear'],
+    ],
+    neutral: [
+      ['Pock', 'Odd-step'], ['Glim', 'Bright-touch'], ['Sprocket', 'Wheel-born'],
+      ['Cog', 'Gear-heart'], ['Pip', 'Small-make'], ['Zap', 'Spark-born'],
+      ['Nib', 'Ink-touch'], ['Whir', 'Gear-sound'], ['Buzz', 'Hum-bright'],
+      ['Click', 'Gear-turn'], ['Tick', 'Clock-born'], ['Snap', 'Quick-touch'],
+      ['Flux', 'Change-born'], ['Blink', 'Light-touch'], ['Rune', 'Mark-born'],
+      ['Glyph', 'Sign-touch'], ['Spark', 'Fire-born'], ['Arc', 'Bright-curve'],
+      ['Volt', 'Charge-born'], ['Beam', 'Light-born'], ['Prism', 'Color-touch'],
+      ['Lens', 'See-through'], ['Coil', 'Spring-touch'], ['Flint', 'Spark-born'],
+    ],
+  },
+  halforc: {
+    male: [
+      ['Grax', 'Bone-crusher'], ['Morg', 'Warcaller'], ['Urzog', 'Scarred'],
+      ['Karg', 'Stoneskin'], ['Thokk', 'Ironjaw'], ['Vrash', 'Sunderbone'],
+      ['Gorka', 'Ravenbrow'], ['Tusk', 'Split-ear'], ['Bragh', 'Bloodcrown'],
+      ['Krusk', 'Grudge-heart'], ['Thrak', 'Bone-breaker'], ['Grull', 'Iron-jaw'],
+      ['Mork', 'War-scarred'], ['Urzak', 'Battle-born'], ['Krug', 'Stone-fist'],
+      ['Thograk', 'Bone-crusher'], ['Vrakk', 'Scar-face'], ['Gorkak', 'Iron-born'],
+      ['Bruggak', 'Blood-axe'], ['Krugak', 'Stone-breaker'], ['Thrakk', 'War-born'],
+      ['Morkak', 'Battle-scarred'], ['Urzak', 'Grudge-bearer'], ['Garrak', 'Iron-hide'],
+    ],
+    female: [
+      ['Dasha', 'Ironblood'], ['Brenna', 'Half-blood'], ['Yulga', 'Fell-handed'],
+      ['Durga', 'Storm-born'], ['Nala', 'Ashwalker'], ['Olgra', 'Warlorn'],
+      ['Graka', 'Battle-scarred'], ['Morga', 'War-born'], ['Thurka', 'Iron-will'],
+      ['Vrakka', 'Scar-born'], ['Narka', 'Half-blood'], ['Brega', 'Stone-heart'],
+      ['Draka', 'Battle-maid'], ['Urza', 'Iron-born'], ['Gorka', 'War-scarred'],
+      ['Thrakka', 'Bone-crusher'], ['Grulla', 'Iron-jaw'], ['Morkka', 'Battle-born'],
+      ['Urgga', 'Stone-fist'], ['Krugga', 'Grudge-heart'], ['Thrukka', 'War-maid'],
+      ['Morukka', 'Battle-scarred'], ['Urzakka', 'Iron-hide'], ['Garraka', 'Stone-born'],
+    ],
+    neutral: [
+      ['Grix', 'Battle-born'], ['Mork', 'War-scarred'], ['Urg', 'Iron-born'],
+      ['Krak', 'Stone-fist'], ['Thok', 'Bone-breaker'], ['Vrax', 'Scar-born'],
+      ['Gruk', 'Half-blood'], ['Brak', 'Iron-hide'], ['Thrug', 'War-born'],
+      ['Mrak', 'Battle-scarred'], ['Urak', 'Grudge-bearer'], ['Grak', 'Stone-born'],
+      ['Bruk', 'Iron-will'], ['Krux', 'Stone-breaker'], ['Thrak', 'War-kin'],
+      ['Mork', 'Battle-worn'], ['Urk', 'Iron-fist'], ['Grax', 'Stone-heart'],
+      ['Brax', 'Half-blood'], ['Kruk', 'Grudge-born'], ['Thrux', 'War-mark'],
+      ['Morx', 'Battle-kin'], ['Urkax', 'Iron-born'], ['Grukax', 'Stone-scarred'],
+    ],
+  },
+  tiefling: {
+    male: [
+      ['Mordecai', 'Hellbound'], ['Calix', 'Brimstone'], ['Akmenos', 'Ashsoul'],
+      ['Barakas', 'Hellmarked'], ['Hadar', 'Darkpulse'], ['Kairon', 'Soulfire'],
+      ['Morthos', 'Hex-born'], ['Skamos', 'Voidwarden'], ['Riven', 'Ashblood'],
+      ['Zaros', 'Ember-born'], ['Corvax', 'Shadow-heart'], ['Malachar', 'Hellfire'],
+      ['Thadeus', 'Brimstone-born'], ['Carax', 'Void-touched'], ['Sevryn', 'Ember-born'],
+      ['Pyrax', 'Flame-born'], ['Zarak', 'Shadow-marked'], ['Malvex', 'Hell-marked'],
+      ['Darax', 'Void-born'], ['Tarquin', 'Brand-touched'], ['Varek', 'Hell-sworn'],
+      ['Neros', 'Ash-born'], ['Dravan', 'Shadowtail'], ['Caelar', 'Ember-soul'],
+    ],
+    female: [
+      ['Lilith', 'Silvertongue'], ['Damaia', 'Ember-eye'], ['Therai', 'Brand-touched'],
+      ['Vex', 'Shadowtail'], ['Nyx', 'Smokewraith'], ['Zariel', 'Fallen light'],
+      ['Sevryn', 'Ember-born'], ['Xara', 'Void-born'], ['Malevex', 'Hell-touched'],
+      ['Pyrith', 'Flame-born'], ['Zarith', 'Shadow-marked'], ['Malvexia', 'Hell-marked'],
+      ['Darith', 'Void-born'], ['Tarquinia', 'Brand-touched'], ['Varith', 'Hell-sworn'],
+      ['Nerith', 'Ash-born'], ['Dravith', 'Shadowtail'], ['Caelith', 'Ember-soul'],
+      ['Luxia', 'Void-touched'], ['Serafex', 'Hell-fire'], ['Nyxara', 'Smoke-born'],
+      ['Zarexia', 'Shadow-heart'], ['Malvara', 'Hell-born'], ['Pyrvex', 'Flame-heart'],
+    ],
+    neutral: [
+      ['Riven', 'Ashblood'], ['Nyx', 'Smokewraith'], ['Vex', 'Shadowtail'],
+      ['Zar', 'Void-born'], ['Mav', 'Hell-touched'], ['Pyrex', 'Flame-born'],
+      ['Darex', 'Shadow-marked'], ['Varek', 'Hell-sworn'], ['Nerex', 'Ash-born'],
+      ['Drex', 'Shadowtail'], ['Caelx', 'Ember-soul'], ['Luxex', 'Void-touched'],
+      ['Serafex', 'Hell-fire'], ['Nyxex', 'Smoke-born'], ['Zarex', 'Shadow-heart'],
+      ['Malvex', 'Hell-born'], ['Pyrvex', 'Flame-heart'], ['Darvex', 'Void-mark'],
+      ['Tarvex', 'Brand-born'], ['Nervex', 'Ash-mark'], ['Corvex', 'Shadow-born'],
+      ['Xavex', 'Void-walker'], ['Mavex', 'Hell-mark'], ['Pyrex', 'Flame-born'],
+    ],
+  },
+  dragonborn: {
+    male: [
+      ['Arjhan', 'Scale-sworn'], ['Donaar', 'Thunderscale'], ['Heskan', 'Ashbreath'],
+      ['Kriv', 'Stormborn'], ['Medrash', 'Oathscale'], ['Mehen', 'Forgecrest'],
+      ['Nadarr', 'Wildfire'], ['Pandjed', 'Goldscale'], ['Rhogar', 'Bladescale'],
+      ['Shamash', 'Cinderclaw'], ['Tarhun', 'Ironscale'], ['Torinn', 'Stormcrest'],
+      ['Balasar', 'Emberclaw'], ['Ghesh', 'Ironwing'], ['Shedinn', 'Voidwing'],
+      ['Patrin', 'Skyborn'], ['Donaar', 'Thunder-born'], ['Krivaan', 'Storm-sworn'],
+      ['Medraash', 'Oath-bearer'], ['Mehenaar', 'Forge-sworn'], ['Nadaraan', 'Wildfire-born'],
+      ['Pandjaar', 'Gold-wing'], ['Rhogaraan', 'Blade-born'], ['Tarhunaan', 'Iron-born'],
+    ],
+    female: [
+      ['Akra', 'Flame-born'], ['Biri', 'White-scale'], ['Daar', 'Ember-born'],
+      ['Farideh', 'Twin-cursed'], ['Harann', 'Silver-scale'], ['Havilar', 'Twin-born'],
+      ['Jheri', 'Gold-scale'], ['Kava', 'Storm-born'], ['Korinn', 'Sea-scale'],
+      ['Mishann', 'Copper-born'], ['Nala', 'Ember-scale'], ['Perra', 'Wind-born'],
+      ['Raiann', 'Sun-scale'], ['Sora', 'Sky-born'], ['Surina', 'Fire-heart'],
+      ['Thava', 'Earth-born'], ['Uadjit', 'Snake-scale'], ['Vrinn', 'Storm-scale'],
+      ['Arjhani', 'Scale-maid'], ['Krivaan', 'Storm-born'], ['Medraashi', 'Oath-scale'],
+      ['Nadarri', 'Wildfire-born'], ['Rhogari', 'Blade-scale'], ['Tarhuni', 'Iron-scale'],
+    ],
+    neutral: [
+      ['Kriv', 'Stormborn'], ['Sora', 'Sky-born'], ['Raan', 'Scale-touched'],
+      ['Veth', 'Flame-born'], ['Torinn', 'Storm-crest'], ['Nadarr', 'Wildfire'],
+      ['Arjhan', 'Scale-sworn'], ['Ghesh', 'Iron-wing'], ['Balasar', 'Ember-claw'],
+      ['Mehen', 'Forge-crest'], ['Pandjed', 'Gold-scale'], ['Rhogar', 'Blade-scale'],
+      ['Shamash', 'Cinder-claw'], ['Tarhun', 'Iron-scale'], ['Heskan', 'Ash-breath'],
+      ['Donaar', 'Thunder-scale'], ['Patrin', 'Sky-born'], ['Shedinn', 'Void-wing'],
+      ['Medrash', 'Oath-scale'], ['Krivaan', 'Storm-sworn'], ['Nala', 'Ember-scale'],
+      ['Perra', 'Wind-born'], ['Raiann', 'Sun-scale'], ['Thava', 'Earth-born'],
+    ],
+  },
+  warforged: {
+    male: [
+      ['Onyx-7', 'Combat unit'], ['Bastion', 'Shield-line'], ['Caliburn', 'Edge-sworn'],
+      ['Aurek', 'Stalwart'], ['Siege', 'Breaker'], ['Remnant', 'Survivor'],
+      ['Crux', 'Resolver'], ['Chassis', 'First-made'], ['Durakon', 'Unbreaking'],
+      ['Ironveil', 'Watcher'], ['Anvil', 'Forged-true'], ['Bulwark', 'Shield-born'],
+      ['Rampart', 'Wall-sworn'], ['Citadel', 'Stone-heart'], ['Garrison', 'Fort-born'],
+      ['Battlement', 'Wall-born'], ['Stronghold', 'Fortress-heart'], ['Palisade', 'Stake-born'],
+      ['Rampart', 'Wall-sworn'], ['Barricade', 'Barrier-born'], ['Embrasure', 'Gap-watcher'],
+      ['Merlon', 'Wall-tooth'], ['Battlement', 'Wall-born'], ['Parapet', 'Wall-heart'],
+    ],
+    female: [
+      ['Frenkel', 'Sentinel'], ['Ironveil', 'Watcher'], ['Veritas', 'Seeker'],
+      ['Pyre-3', 'Incendiary'], ['Nullval', 'Last unit'], ['Forgewarden', 'Smith-born'],
+      ['Sentinel', 'Watch-born'], ['Vanguard', 'Front-born'], ['Bulwark', 'Shield-heart'],
+      ['Citadel', 'Stone-born'], ['Bastion', 'Shield-heart'], ['Rampart', 'Wall-born'],
+      ['Garrison', 'Fort-heart'], ['Stronghold', 'Fortress-born'], ['Palisade', 'Stake-heart'],
+      ['Barricade', 'Barrier-heart'], ['Embrasure', 'Gap-born'], ['Merlon', 'Wall-born'],
+      ['Parapet', 'Wall-heart'], ['Crenelle', 'Gap-born'], ['Machicolation', 'Drop-born'],
+      ['Battlement', 'Wall-heart'], ['Counterscarp', 'Slope-born'], ['Gorge', 'Throat-born'],
+    ],
+    neutral: [
+      ['Null-4', 'Purpose-built'], ['Anvil', 'Forged-true'], ['Crux', 'Resolver'],
+      ['Veritas', 'Seeker'], ['Remnant', 'Survivor'], ['Chassis', 'First-made'],
+      ['Forge', 'Made-true'], ['Iron', 'Hard-born'], ['Steel', 'Tempered'],
+      ['Brass', 'Warm-metal'], ['Bronze', 'Old-metal'], ['Copper', 'Bright-metal'],
+      ['Nickel', 'Hard-silver'], ['Cobalt', 'Blue-metal'], ['Chromium', 'Bright-born'],
+      ['Titanium', 'Light-strong'], ['Tungsten', 'Heavy-hard'], ['Osmium', 'Dense-born'],
+      ['Iridium', 'Rainbow-born'], ['Platinum', 'Grey-bright'], ['Palladium', 'Pale-born'],
+      ['Rhodium', 'Rose-bright'], ['Rhenium', 'Rhine-born'], ['Vanadium', 'Vale-born'],
+    ],
+  },
+  eberron: {
+    male: [
+      ['Khorvath', 'Dragonmarked'], ['Zendak', 'Wanderer'], ['Merrix', 'Artificer-kin'],
+      ['Vyndal', 'Deneith blade'], ['Davan', 'Kundarak vault'], ['Elix', 'Sivis-born'],
+      ['Traveth', 'Storm-bound'], ['Caldas', 'Coin-sworn'], ['Ryvek', 'Passage-born'],
+      ['Khorvyn', 'Mark-born'], ['Zendak', 'Far-walker'], ['Merrak', 'Forge-kin'],
+      ['Vyndar', 'Blade-sworn'], ['Davrak', 'Vault-warden'], ['Elindor', 'Word-keeper'],
+      ['Travrak', 'Storm-sworn'], ['Calrak', 'Coin-born'], ['Ryverak', 'Passage-sworn'],
+      ['Khorvak', 'Mark-sworn'], ['Zenrak', 'Far-born'], ['Merrak', 'Forge-sworn'],
+      ['Vyndrak', 'Blade-born'], ['Davak', 'Vault-born'], ['Elrak', 'Word-born'],
+    ],
+    female: [
+      ['Irulan', 'House-sworn'], ['Thessa', 'Lyrandar blood'], ['Raelith', 'Tharashk'],
+      ['Kaeleth', 'Medani eye'], ['Sorith', 'Cannith-made'], ['Phalan', 'Ghallanda inn'],
+      ['Nyrith', 'Shadow-marked'], ['Khorvara', 'Mark-born'], ['Zendara', 'Far-walker'],
+      ['Merrith', 'Forge-kin'], ['Vyndara', 'Blade-sworn'], ['Davara', 'Vault-warden'],
+      ['Elindra', 'Word-keeper'], ['Travara', 'Storm-sworn'], ['Calara', 'Coin-born'],
+      ['Ryvara', 'Passage-sworn'], ['Khorvindra', 'Mark-sworn'], ['Zenvara', 'Far-born'],
+      ['Merrvara', 'Forge-sworn'], ['Vynvara', 'Blade-born'], ['Davindra', 'Vault-born'],
+      ['Elindara', 'Word-born'], ['Travindra', 'Storm-born'], ['Calindra', 'Coin-born'],
+    ],
+    neutral: [
+      ['Sorith', 'Cannith-made'], ['Caldas', 'Coin-sworn'], ['Elix', 'Sivis-born'],
+      ['Khorv', 'Mark-born'], ['Zend', 'Far-walker'], ['Merr', 'Forge-kin'],
+      ['Vynd', 'Blade-sworn'], ['Dav', 'Vault-warden'], ['Elin', 'Word-keeper'],
+      ['Trav', 'Storm-sworn'], ['Cal', 'Coin-born'], ['Ryv', 'Passage-sworn'],
+      ['Khorin', 'Mark-sworn'], ['Zenin', 'Far-born'], ['Merrin', 'Forge-sworn'],
+      ['Vyndin', 'Blade-born'], ['Davin', 'Vault-born'], ['Elinin', 'Word-born'],
+      ['Travin', 'Storm-born'], ['Calin', 'Coin-born'], ['Ryvin', 'Passage-born'],
+      ['Khorvin', 'Mark-born'], ['Zenvin', 'Far-sworn'], ['Merrvin', 'Forge-born'],
+    ],
+  },
 };
+
 
 // --- Last name pools (per race) ---
 
@@ -248,21 +515,20 @@ const SYLLABLE_SETS = {
 // Build one procedural name from a syllable set
 function buildProceduralName(set) {
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-  const syllableCount = Math.random() < 0.4 ? 2 : 3;
+  // Keep to 2 syllables — 3 produces names that run too long
+  const syllableCount = 2;
 
   let name = '';
   for (let i = 0; i < syllableCount; i++) {
     name += pick(set.onset);
     name += pick(set.vowel);
-    // Coda on all syllables except sometimes the last, to keep names readable
-    if (i < syllableCount - 1 || Math.random() < 0.5) {
+    if (i < syllableCount - 1 || Math.random() < 0.4) {
       name += pick(set.coda);
     }
   }
 
   // Capitalise first letter, lowercase the rest
   name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  // Re-capitalise after hyphens (for warforged style numbers like Pyre-3)
   name = name.replace(/-([a-z0-9])/g, (_, c) => '-' + c.toUpperCase());
 
   return [name, pick(set.hints)];
@@ -278,7 +544,7 @@ function buildProceduralNames(style) {
   while (results.length < 8 && attempts < 200) {
     attempts++;
     const [name, hint] = buildProceduralName(set);
-    if (!seen.has(name) && name.length >= 4 && name.length <= 14) {
+    if (!seen.has(name) && name.length >= 4 && name.length <= 10) {
       seen.add(name);
       results.push([name, hint]);
     }
@@ -553,15 +819,14 @@ function generateNames() {
   let picks;
 
   if (selectedStyle === 'procedural') {
-    // Procedural mode: pick a random underlying style and generate from its syllables
     const proceduralStyles = Object.keys(SYLLABLE_SETS);
     const randomStyle = proceduralStyles[Math.floor(Math.random() * proceduralStyles.length)];
     picks = buildProceduralNames(randomStyle);
   } else if (NAME_POOLS[selectedStyle]) {
-    // Fixed pool: shuffle and slice
-    picks = shuffle([...NAME_POOLS[selectedStyle]]).slice(0, 8);
+    // Pull from the gender sub-pool, fall back to neutral if the key is missing
+    const pool = NAME_POOLS[selectedStyle][selectedGender] || NAME_POOLS[selectedStyle].neutral || [];
+    picks = shuffle([...pool]).slice(0, 8);
   } else {
-    // Fallback: procedural from matching syllable set
     picks = buildProceduralNames(selectedStyle);
   }
 
@@ -589,6 +854,21 @@ function generateNames() {
     btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy, btn));
   });
 }
+
+// --- Gender button logic ---
+
+document.querySelectorAll('.gender-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.gender-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    selectedGender = btn.dataset.gender;
+    generateNames();
+  });
+});
 
 // --- Server button logic ---
 
