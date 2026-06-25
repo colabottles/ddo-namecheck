@@ -6,6 +6,7 @@ const RECENT_MAX = 10;
 
 let selectedServers = ['Shadowdale'];
 let selectedStyle = 'fantasy';
+let selectedLastStyle = 'fantasy';
 
 // --- Name pools (fixed) ---
 
@@ -25,6 +26,14 @@ const NAME_POOLS = {
     ['Rolfgar', 'Old stone'], ['Bryndis', 'Shield-maiden'], ['Ulvarn', 'Deep iron'],
     ['Heldrak', 'Tunnel-king'], ['Morkeld', 'Rune-axe'], ['Sigra', 'Fire-anvil'],
     ['Veldrak', 'Grudge-sworn'],
+  ],
+  duergar: [
+    ['Grazzt', 'Underdark-born'], ['Thrak', 'Ashen-veined'], ['Dorzak', 'Bitter-heart'],
+    ['Skrug', 'Stonegrey'], ['Varka', 'Shadowforged'], ['Grull', 'Deep-gnasher'],
+    ['Thorzak', 'Grudge-keeper'], ['Drusk', 'Ashenhelm'], ['Kraza', 'Gloom-tempered'],
+    ['Brak', 'Iron-spite'], ['Zulka', 'Cavern-bred'], ['Ghorza', 'Dusk-anvil'],
+    ['Skruzz', 'Saltrock'], ['Vraka', 'Hollow-eye'], ['Driznak', 'Deepwatch'],
+    ['Tharg', 'Stonewraith'],
   ],
   elven: [
     ['Aelindra', 'Starweave'], ['Sylvari', 'Dawnlight'], ['Caladrel', 'Windwhisper'],
@@ -92,6 +101,77 @@ const NAME_POOLS = {
   ],
 };
 
+// --- Last name pools (per race) ---
+
+const LAST_NAME_POOLS = {
+  fantasy: [
+    ['Dawnmantle', 'Light-bearer'], ['Ashveil', 'Shadow-born'], ['Ironstride', 'Battle-road'],
+    ['Voidwhisper', 'Forgotten tongue'], ['Stormcloak', 'Weather-worn'], ['Emberbane', 'Flame-quenched'],
+    ['Nighthollow', 'Dark-dweller'], ['Swiftblade', 'Quick-steel'], ['Coldmantle', 'Frost-touched'],
+    ['Ravenmark', 'Omen-born'], ['Silverveil', 'Moon-shrouded'], ['Duskhollow', 'Twilight vale'],
+  ],
+  dwarven: [
+    ['Ironmantle', 'Forge-proud'], ['Stonebeard', 'Elder-kin'], ['Copperfist', 'Hard-handed'],
+    ['Deepdelver', 'Tunnel-born'], ['Goldvein', 'Rich-lode'], ['Axebreaker', 'Battle-worn'],
+    ['Hammerfall', 'Smith-line'], ['Flintrock', 'Hard as stone'], ['Grudgeborn', 'Long-memory'],
+    ['Deepmantle', 'Under-cloak'], ['Runecarver', 'Mark-keeper'], ['Ironbelly', 'Stout-kin'],
+  ],
+  duergar: [
+    ['Ashmantle', 'Soot-born'], ['Greystone', 'Underdark-grey'], ['Darkdelve', 'Depth-dweller'],
+    ['Bitterfist', 'Grudge-handed'], ['Shadowvein', 'Grey-blooded'], ['Gloomhammer', 'Dark-smith'],
+    ['Coldgranite', 'Stone-cold'], ['Dustmantle', 'Ash-cloak'], ['Voidstone', 'Hollow-rock'],
+    ['Grimdelve', 'Bleak-digger'], ['Ironblight', 'Rust-touched'], ['Darkmantle', 'Shrouded-kin'],
+  ],
+  elven: [
+    ['Dawnwhisper', 'First light'], ['Silverleaf', 'Moon-tree'], ['Starlace', 'Sky-woven'],
+    ['Windveil', 'Air-shrouded'], ['Moonshadow', 'Night-touched'], ['Leafsong', 'Forest-voice'],
+    ['Duskmantle', 'Twilight cloak'], ['Sunweave', 'Light-woven'], ['Mistthorn', 'Dawn-piercer'],
+    ['Ithilmere', 'Moon-pool'], ['Aewenstar', 'Bird-sky'], ['Caladwen', 'Light-maid line'],
+  ],
+  halfling: [
+    ['Goodbarrel', 'Cellar-proud'], ['Thistlewick', 'Meadow-kin'], ['Lightfoot', 'Quick-step'],
+    ['Copperkettle', 'Hearth-warm'], ['Boulderbrook', 'Stream-side'], ['Meadowgrain', 'Field-born'],
+    ['Underhill', 'Hollow-home'], ['Pipewhistle', 'Smoke-lover'], ['Riverstone', 'Water-smooth'],
+    ['Brambletoe', 'Wandering kin'], ['Warmhearth', 'Fire-keeper'], ['Goldenbuckle', 'Well-dressed'],
+  ],
+  gnome: [
+    ['Cogsworth', 'Gear-minded'], ['Sparkwhistle', 'Bright-sound'], ['Tinklebottom', 'Light-step'],
+    ['Fumblefingers', 'Quick-handed'], ['Prismwick', 'Color-bright'], ['Runesprocket', 'Mark-gear'],
+    ['Clockmantle', 'Time-cloak'], ['Oddwright', 'Strange-maker'], ['Glassweaver', 'Light-bender'],
+    ['Whistlewick', 'Sound-keen'], ['Lampwright', 'Light-maker'], ['Inkfingers', 'Script-stained'],
+  ],
+  halforc: [
+    ['Bonecrusher', 'Hard-handed'], ['Bloodmantle', 'War-cloak'], ['Ironscar', 'Battle-marked'],
+    ['Gorefoot', 'Blood-track'], ['Skullbreaker', 'Hard-blow'], ['Ashbrand', 'Fire-marked'],
+    ['Stonehide', 'Thick-skin'], ['Deathgrip', 'Iron-hand'], ['Rageborn', 'Fury-kin'],
+    ['Darkblood', 'Mixed-vein'], ['Grimtusk', 'Hard-tooth'], ['Warcrown', 'Battle-won'],
+  ],
+  tiefling: [
+    ['Emberveil', 'Flame-shrouded'], ['Ashmantle', 'Cinder-cloak'], ['Darkfire', 'Hellborn'],
+    ['Shadowbrand', 'Mark-bearer'], ['Voidmantle', 'Empty-cloak'], ['Hellweave', 'Infernal-woven'],
+    ['Cinderborn', 'Ember-kin'], ['Brimstone', 'Sulfur-blood'], ['Smokeveil', 'Mist-hidden'],
+    ['Nightbrand', 'Dark-marked'], ['Ashveil', 'Soot-shrouded'], ['Emberthorn', 'Flame-piercer'],
+  ],
+  dragonborn: [
+    ['Ironscale', 'Hard-hide'], ['Embercrest', 'Flame-crowned'], ['Stormwing', 'Thunder-flight'],
+    ['Ashmantle', 'Cinder-cloak'], ['Goldscale', 'Bright-hide'], ['Bladescale', 'Edge-skin'],
+    ['Cinderclaw', 'Ember-grip'], ['Voidwing', 'Dark-flight'], ['Oathscale', 'Sworn-hide'],
+    ['Stormcrest', 'Thunder-crown'], ['Ironwing', 'Steel-flight'], ['Emberveil', 'Flame-shroud'],
+  ],
+  warforged: [
+    ['Ironframe', 'Steel-body'], ['Voidcore', 'Empty-heart'], ['Steelmantle', 'Plate-cloak'],
+    ['Nullframe', 'Blank-form'], ['Coreveil', 'Hidden-heart'], ['Ironwright', 'Steel-made'],
+    ['Forgemark', 'Maker-signed'], ['Steelcore', 'Iron-heart'], ['Vaultframe', 'Sealed-form'],
+    ['Ironveil', 'Steel-shroud'], ['Coldframe', 'Chill-form'], ['Nullmark', 'Blank-signed'],
+  ],
+  eberron: [
+    ['d\'Cannith', 'House-made'], ['d\'Lyrandar', 'Storm-sailed'], ['d\'Deneith', 'Blade-sworn'],
+    ['d\'Medani', 'Eye-sharp'], ['d\'Tharashk', 'Finder-kin'], ['d\'Kundarak', 'Vault-warden'],
+    ['d\'Ghallanda', 'Hearth-sworn'], ['d\'Sivis', 'Word-keeper'], ['d\'Orien', 'Road-swift'],
+    ['d\'Phiarlan', 'Shadow-dancer'], ['d\'Vadalis', 'Bond-keeper'], ['d\'Jorasco', 'Healer-kin'],
+  ],
+};
+
 // --- Procedural syllable engine ---
 // Each style has onset consonants, vowel nuclei, and coda consonants.
 // Names are built as 2–3 syllables: (onset)(vowel)(coda?)(onset)(vowel)(coda?)...
@@ -108,6 +188,12 @@ const SYLLABLE_SETS = {
     vowel:  ['a', 'u', 'o', 'un', 'ak'],
     coda:   ['grin', 'dak', 'nheld', 'nda', 'bar', 'rak', 'ka', 'vik', 'ni', 'gar', 'keld', 'drak'],
     hints:  ['Stone-fist', 'Forge-born', 'Deep-axe', 'Grudgebearer', 'Ironback', 'Clanhammer', 'Gold-vein', 'Rune-axe'],
+  },
+  duergar: {
+    onset:  ['Gr', 'Thr', 'Dor', 'Skr', 'Vark', 'Grul', 'Brk', 'Drusk', 'Kr', 'Zulk', 'Ghor', 'Vrk'],
+    vowel:  ['a', 'u', 'az', 'uzz', 'ok'],
+    coda:   ['zzt', 'ak', 'zak', 'ug', 'a', 'll', 'zak', 'k', 'za', 'ka', 'za', 'arg'],
+    hints:  ['Underdark-born', 'Ashen-veined', 'Bitter-heart', 'Stonegrey', 'Shadowforged', 'Deep-gnasher', 'Gloom-tempered', 'Cavern-bred'],
   },
   elven: {
     onset:  ['Ae', 'Syl', 'Cal', 'El', 'Nae', 'Thal', 'Aer', 'Li', 'Val', 'Isi', 'Cel', 'Mir'],
@@ -555,12 +641,54 @@ document.querySelectorAll('.style-btn').forEach(btn => {
   });
 });
 
+// --- Last name style button logic ---
+
+document.querySelectorAll('.lastname-style-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.lastname-style-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    selectedLastStyle = btn.dataset.style;
+    generateLastNames();
+  });
+});
+
 // --- Clear recent ---
 
 document.getElementById('clear-recent-btn').addEventListener('click', () => {
   saveRecent([]);
   renderRecent();
 });
+
+// --- Last name generator ---
+
+function generateLastNames() {
+  // Fall back to fantasy pool if the selected style has no last name pool
+  const pool = LAST_NAME_POOLS[selectedLastStyle] || LAST_NAME_POOLS.fantasy;
+  const picks = shuffle([...pool]).slice(0, 8);
+  const grid = document.getElementById('lastname-grid');
+
+  grid.innerHTML = picks.map(([name, hint]) => `
+    <div class="name-tile">
+      <button class="tile-check" data-name="${escapeHtml(name)}">
+        <span class="tile-name">${escapeHtml(name)}</span>
+        <span class="tile-hint">${escapeHtml(hint)}</span>
+      </button>
+      <button class="tile-copy" data-copy="${escapeHtml(name)}" title="Copy surname">⎘</button>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.tile-check').forEach((btn, i) => {
+    btn.addEventListener('click', () => copyToClipboard(picks[i][0], btn));
+  });
+
+  grid.querySelectorAll('.tile-copy').forEach((btn) => {
+    btn.addEventListener('click', () => copyToClipboard(btn.dataset.copy, btn));
+  });
+}
 
 // --- Keyboard / button wiring ---
 
@@ -570,8 +698,10 @@ document.getElementById('name-input').addEventListener('keydown', e => {
 
 document.getElementById('check-btn').addEventListener('click', checkName);
 document.getElementById('regen-btn').addEventListener('click', generateNames);
+document.getElementById('lastname-regen-btn').addEventListener('click', generateLastNames);
 
 // --- Init ---
 
 generateNames();
+generateLastNames();
 renderRecent();

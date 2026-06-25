@@ -84,6 +84,7 @@
       <div class="style-row" role="group" aria-label="Name style">
         <button class="style-btn active" data-style="fantasy" aria-pressed="true">Fantasy</button>
         <button class="style-btn" data-style="dwarven" aria-pressed="false">Dwarven</button>
+        <button class="style-btn" data-style="duergar" aria-pressed="false">Duergar</button>
         <button class="style-btn" data-style="elven" aria-pressed="false">Elven</button>
         <button class="style-btn" data-style="halfling" aria-pressed="false">Halfling</button>
         <button class="style-btn" data-style="gnome" aria-pressed="false">Gnome</button>
@@ -102,12 +103,46 @@
       </button>
     </section>
 
+    <!-- Last name generator -->
+    <section class="panel" aria-labelledby="lastname-heading">
+      <h2 id="lastname-heading" class="panel-heading">Last Name Generator</h2>
+      <p class="panel-sub">Same race — click any surname to copy it.</p>
+
+      <div class="style-row" role="group" aria-label="Last name style">
+        <button class="lastname-style-btn active" data-style="fantasy"
+          aria-pressed="true">Fantasy</button>
+        <button class="lastname-style-btn" data-style="dwarven"
+          aria-pressed="false">Dwarven</button>
+        <button class="lastname-style-btn" data-style="duergar"
+          aria-pressed="false">Duergar</button>
+        <button class="lastname-style-btn" data-style="elven" aria-pressed="false">Elven</button>
+        <button class="lastname-style-btn" data-style="halfling"
+          aria-pressed="false">Halfling</button>
+        <button class="lastname-style-btn" data-style="gnome" aria-pressed="false">Gnome</button>
+        <button class="lastname-style-btn" data-style="halforc"
+          aria-pressed="false">Half-Orc</button>
+        <button class="lastname-style-btn" data-style="tiefling"
+          aria-pressed="false">Tiefling</button>
+        <button class="lastname-style-btn" data-style="dragonborn"
+          aria-pressed="false">Dragonborn</button>
+        <button class="lastname-style-btn" data-style="warforged"
+          aria-pressed="false">Warforged</button>
+        <button class="lastname-style-btn" data-style="eberron"
+          aria-pressed="false">Eberron</button>
+      </div>
+
+      <div id="lastname-grid" class="name-grid"></div>
+
+      <button class="regen-btn" id="lastname-regen-btn">
+        ↻ Regenerate
+      </button>
+
   </main>
 
   <footer class="site-footer">
     <p>Name availability data via <a href="https://www.ddoaudit.com" target="_blank"
-        rel="noopener noreferrer">DDO Audit</a>. Results are best-effort (always verify in-game
-      before committing to a name).</p>
+        rel="noopener noreferrer">DDO Audit</a>. Results are best-effort — always verify in-game
+      before committing to a name.</p>
   </footer>
 
   <script src="app.js"></script>
