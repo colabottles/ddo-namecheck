@@ -750,6 +750,7 @@ function renderResult(name, results) {
 
   if (exactHits.length > 0) {
     const serverPills = exactHits.map(r => `<span class="server-hit">${r.server}</span>`).join('');
+    const cleanServers = results.filter(r => !r.error && !exactHits.includes(r)).map(r => `<span class="match-pill">${r.server}</span>`).join('');
     const charInfos = exactHits.map(r => {
       const info = buildCharInfo(r.data);
       return info ? `<p class="char-info">${escapeHtml(r.server)}: ${escapeHtml(info)}</p>` : '';
@@ -763,6 +764,7 @@ function renderResult(name, results) {
         </div>
         <p class="result-detail">An exact match for <strong>${escapeHtml(name)}</strong> was found.</p>
         <div class="server-hits">${serverPills}</div>
+        ${cleanServers ? `<p class="result-note">Not found on: ${cleanServers}</p>` : ''}
         ${charInfos}
         ${errorCount > 0 ? `<p class="result-note">⚠ ${errorCount} server(s) could not be reached — results may be incomplete.</p>` : ''}
       </div>`;
@@ -796,11 +798,11 @@ function renderResult(name, results) {
     html = `
       <div class="result-card safe" role="alert">
         <div class="result-verdict-row">
-          <p class="result-verdict">✓ Likely Safe</p>
+          <p class="result-verdict">✓ Not Found in DDO Audit</p>
           <button class="copy-btn" data-copy="${escapeHtml(name)}">⎘ Copy</button>
         </div>
-        <p class="result-detail">No match found for <strong>${escapeHtml(name)}</strong> on ${checkedCount - errorCount} server(s) checked.</p>
-        ${errorCount > 0 ? `<p class="result-note">⚠ ${errorCount} server(s) could not be reached — verify in-game to be sure.</p>` : ''}
+        <p class="result-detail">No match for <strong>${escapeHtml(name)}</strong> on ${checkedCount - errorCount} server(s). DDO Audit only tracks recently active characters — this name may still be taken in-game. Always verify at character creation.</p>
+        ${errorCount > 0 ? `<p class="result-note">⚠ ${errorCount} server(s) could not be reached — results may be incomplete.</p>` : ''}
       </div>`;
 
     addToRecent({ name, server: selectedServers.join(', '), status: 'safe' });
